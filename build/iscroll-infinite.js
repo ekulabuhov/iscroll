@@ -1122,6 +1122,16 @@ IScroll.prototype = {
 	},
 
 	_nearestSnap: function (x, y) {
+		if ( this.options.infiniteElements ) {
+			var i = Math.round(x/this.infiniteElementSize);
+			return {
+				x: i*this.infiniteElementSize,
+				y: y,
+				pageX: -i,
+				pageY: 0
+			}
+		}
+
 		if ( !this.pages.length ) {
 			return { x: 0, y: 0, pageX: 0, pageY: 0 };
 		}
@@ -1196,23 +1206,30 @@ IScroll.prototype = {
 		};
 	},
 
-	goToPage: function (x, y, time, easing) {
+	goToPage: function (x, y, time, easing) {		
+		var posX, posY;
 		easing = easing || this.options.bounceEasing;
+		
+		if ( this.options.infiniteElements ) {
+			posX = -(this.infiniteElementSize*x),
+			posY = 0;
+		} else {
 
-		if ( x >= this.pages.length ) {
-			x = this.pages.length - 1;
-		} else if ( x < 0 ) {
-			x = 0;
-		}
+			if ( x >= this.pages.length ) {
+				x = this.pages.length - 1;
+			} else if ( x < 0 ) {
+				x = 0;
+			}
 
-		if ( y >= this.pages[x].length ) {
-			y = this.pages[x].length - 1;
-		} else if ( y < 0 ) {
-			y = 0;
-		}
+			if ( y >= this.pages[x].length ) {
+				y = this.pages[x].length - 1;
+			} else if ( y < 0 ) {
+				y = 0;
+			}
 
-		var posX = this.pages[x][y].x,
+			posX = this.pages[x][y].x,
 			posY = this.pages[x][y].y;
+		}
 
 		time = time === undefined ? this.options.snapSpeed || Math.max(
 			Math.max(
