@@ -1123,7 +1123,7 @@ IScroll.prototype = {
 
 	_nearestSnap: function (x, y) {
 		if ( this.options.infiniteElements ) {
-			var i = Math.round(x/this.infiniteElementSize);
+			var i = Math.min(0, Math.round(x/this.infiniteElementSize));
 			return {
 				x: i*this.infiniteElementSize,
 				y: y,
