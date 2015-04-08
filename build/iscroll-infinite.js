@@ -1101,8 +1101,10 @@ IScroll.prototype = {
 				this.snapThresholdX = this.options.snapThreshold;
 				this.snapThresholdY = this.options.snapThreshold;
 			} else {
-				this.snapThresholdX = Math.round(this.pages[this.currentPage.pageX][this.currentPage.pageY].width * this.options.snapThreshold);
-				this.snapThresholdY = Math.round(this.pages[this.currentPage.pageX][this.currentPage.pageY].height * this.options.snapThreshold);
+				if (!this.options.infiniteElements) {
+					this.snapThresholdX = Math.round(this.pages[this.currentPage.pageX][this.currentPage.pageY].width * this.options.snapThreshold);
+					this.snapThresholdY = Math.round(this.pages[this.currentPage.pageX][this.currentPage.pageY].height * this.options.snapThreshold);
+				}
 			}
 		});
 
@@ -1457,6 +1459,8 @@ IScroll.prototype = {
 
 		this.on('refresh', function () {
 			var elementsPerPage;
+			// on resize - re-get the width of the element
+			this.infiniteElementSize = this.options.scrollY ? this.infiniteMaster.offsetHeight : this.infiniteMaster.offsetWidth;
 			if ( this.options.scrollY ) {
 				elementsPerPage = Math.ceil(this.wrapperHeight / this.infiniteElementSize);
 			} else {
